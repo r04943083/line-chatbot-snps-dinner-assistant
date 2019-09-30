@@ -14,7 +14,7 @@ class LunchEnum(Enum):
     # LunchEnum.W_NORMAL_ADD_1.value = '包周一般餐盒++'
   
 @singleton
-class CmdParser(text):
+class CmdParser:
     def __init__(self):
         pass
         

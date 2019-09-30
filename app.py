@@ -1,16 +1,18 @@
 from flask import Flask, request, abort
-from line_bot import LineBot
+from line_bot_mgr import LineBotMgr
 
 from linebot.exceptions import (
     InvalidSignatureError
 )
-from linebot.models import *
+from linebot.models import (
+    MessageEvent, TextMessage, StickerMessage
+)
 
 app = Flask(__name__)
 
-line_bot = LineBot()
+line_bot = LineBotMgr()
 # Channel Access Token
-line_bot_api = line_bot.line_bot_api
+#line = line_bot.line_bot_api
 
 # Channel Secret
 handler = line_bot.handler
@@ -21,7 +23,7 @@ def callback():
     signature = request.headers['X-Line-Signature']
     # get request body as text
     body = request.get_data(as_text=True)
-    app.logger.info("Request body: " + body)
+    #app.logger.info("Request body: " + body)
     # handle webhook body
     try:
         handler.handle(body, signature)
@@ -31,7 +33,7 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    line_bot_api.TextSendMessage(event, event.message.text)
+    line_bot.TextSendMessage(event, event.message.text)
     
 @handler.add(MessageEvent, message=StickerMessage)
 def handle_sticker_message(event):
