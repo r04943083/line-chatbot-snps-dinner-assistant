@@ -1,21 +1,26 @@
-from singleton_decorator import singleton
+import abc
+from cmd import Strategy, db_map
 from cmd_parser import CmdParser
+from singleton_decorator import singleton
 
 @singleton
 class CmdMgr:
-    def __init__(self, event=None, func=None):
-        self.event = event
-        self.parser = CmdParser()  
-        self.execute = types.MethodType(func, self)
+    def __init__(self, strategy = None):
+        self._strategy = strategy
+        self._parser = CmdParser() 
         
-    def execute(self):
-        pass
+    def execute(self, event):
+        print("CmdMgr > execute > _strategy =>", self._strategy())
+        print("CmdMgr > execute > event =>", event)
+        self._strategy().action(event)
+        
     
-    def exe_str_cmd(self, event, text):
-          _cmd = self.parser(text)
-          
-
-        
+    def decode(self, event, text):
+          _cmd = self._parser.decode(text)
+          print("CmdMgr > decode > _cmd =>", _cmd)
+          self._strategy = db_map[_cmd]
+          print("CmdMgr > decode > _strategy =>", db_map[_cmd])
+          self.execute(event)  
         
 
         
