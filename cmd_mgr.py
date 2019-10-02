@@ -10,7 +10,6 @@ class CmdMgr:
         self._parser = CmdParser() 
         
     def execute(self, event):
-        print("CmdMgr > execute > _strategy =>", self._strategy())
         print("CmdMgr > execute > event =>", event)
         self._strategy().action(event)
         

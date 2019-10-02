@@ -10,13 +10,35 @@ class LunchEnum(Enum):
     M_VEGAN_ADD_1  = '包月素食餐盒++'
     M_ANGEL_ADD_1  = '包月天使餐盒++'
     M_MAN_ADD_1    = '包月男子漢++'    
-    # LunchEnum.W_NORMAL_ADD_1.name = 'W_NORMAL_ADD_1'
-    # LunchEnum.W_NORMAL_ADD_1.value = '包周一般餐盒++'
-  
+    @staticmethod
+    def list():
+        return list(map(lambda x: x.value, LunchEnum))
+
+class DBManualEnum(Enum):
+    BD_DELETE = 'db delete'
+    @staticmethod
+    def list():
+        return list(map(lambda x: x.value, DBManualEnum))
+
+#from aenum import MultiValueEnum
+
+class CmdEnum(Enum):
+    CMD_HELLO     = 'hello'
+    CMD_PRINT_ALL = 'help'
+    @staticmethod
+    def list():
+        return list(map(lambda x: x.value, CmdEnum))
+
+
 @singleton
 class CmdParser:
     def __init__(self):
         pass
         
-    def decode(self, text):
-        return LunchEnum(text)
+    def decode(self, token):
+        if any(x for x in LunchEnum if x.value == token):
+            return LunchEnum(token)
+        elif any(x for x in DBManualEnum if x.value == token):
+            return DBManualEnum(token)
+        elif any(x for x in CmdEnum if x.value == token):
+            return CmdEnum(token)

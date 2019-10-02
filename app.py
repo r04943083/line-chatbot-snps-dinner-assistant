@@ -36,6 +36,7 @@ def callback():
 def handle_message(event):
     #line_bot.TextSendMessage(event, event.message.text)
     cmd_mgr.decode(event, event.message.text)
+    #cmd_mgr.execute(event)
     
 @handler.add(MessageEvent, message=StickerMessage)
 def handle_sticker_message(event):
