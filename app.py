@@ -1,3 +1,5 @@
+ #!/usr/bin/python3
+ 
 from flask import Flask, request, abort
 from line_bot_mgr import LineBotMgr
 from cmd_mgr import CmdMgr

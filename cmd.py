@@ -7,12 +7,9 @@ line_bot = LineBotMgr()
 sql_mgr = PostgreSQLMgr()
 
 TABLE_NAME = 'SNPS_10_W1'
+TABLE_W_NAME = 'SNPS_W'
+TABLE_M_NAME = 'SNPS_M'
 
-class Cmd:
-    def __init__(self, event):
-        self.event = event
-        
-        
 class Strategy(ABC):
     @abstractmethod
     def action(self, event):
@@ -20,43 +17,46 @@ class Strategy(ABC):
 
 class db_week_add_normal(Strategy):
     def action(self, event):
-        print("db_week_add_normal", event, LunchEnum.W_NORMAL_ADD_1.value) 
-        sql_mgr.create_table(TABLE_NAME)
-        sql_mgr.insert_record(TABLE_NAME, event, 1, 0, 0, 0)
-        s = sql_mgr.print_table(TABLE_NAME)
-        line_bot.TextSendMessage(event, str(s))
+        update_table(event, TABLE_W_NAME, 1, 0, 0, 0, 'normal_box')
 
 class db_week_add_vegan(Strategy):
     def action(self, event):
-        line_bot.TextSendMessage(event, LunchEnum.W_VEGAN_ADD_1.value) 
+        update_table(event, TABLE_W_NAME, 0, 1, 0, 0, 'vegan_box')
 
 class db_week_add_angel(Strategy):
     def action(self, event):
-        line_bot.TextSendMessage(event, LunchEnum.W_ANGEL_ADD_1.value) 
+        update_table(event, TABLE_W_NAME, 0, 0, 1, 0, 'angel_box') 
 
 class db_week_add_man(Strategy):
     def action(self, event):
-        line_bot.TextSendMessage(event, LunchEnum.W_MAN_ADD_1.value) 
+        update_table(event, TABLE_W_NAME, 0, 0, 0, 1, 'man_box') 
 
 class db_month_add_normal(Strategy):
     def action(self, event):
-        line_bot.TextSendMessage(event, LunchEnum.M_NORMAL_ADD_1.value) 
+        update_table(event, TABLE_M_NAME, 1, 0, 0, 0, 'normal_box')
 
 class db_month_add_vegan(Strategy):
     def action(self, event):
-        line_bot.TextSendMessage(event, LunchEnum.M_VEGAN_ADD_1.value) 
+        update_table(event, TABLE_M_NAME, 0, 1, 0, 0, 'vegan_box')
 
 class db_month_add_angel(Strategy):
     def action(self, event):
-        line_bot.TextSendMessage(event, LunchEnum.M_ANGEL_ADD_1.value) 
+        update_table(event, TABLE_M_NAME, 0, 0, 1, 0, 'angel_box')
 
 class db_month_add_man(Strategy):
     def action(self, event):
-        line_bot.TextSendMessage(event, LunchEnum.M_MAN_ADD_1.value) 
+        update_table(event, TABLE_M_NAME, 0, 0, 0, 1, 'man_box')  
+
+def update_table(event, table_name, nornal, vegan, angel, man, box_type):
+    sql_mgr.create_table(table_name)
+    sql_mgr.insert_record(table_name, event, nornal, vegan, angel, man, box_type)
+    s = sql_mgr.print_table(table_name)
+    line_bot.TextSendMessage(event, s)
 
 class db_delete_table(Strategy):
      def action(self, event):
-        sql_mgr.delete_table(TABLE_NAME)
+        sql_mgr.delete_table(TABLE_W_NAME)
+        sql_mgr.delete_table(TABLE_M_NAME)
         line_bot.TextSendMessage(event, DBManualEnum.BD_DELETE.value)
 
 class db_hello(Strategy):
